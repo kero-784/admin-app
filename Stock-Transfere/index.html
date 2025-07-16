@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kero Assistance - Home</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <!-- STYLES ARE UNCHANGED -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        :root { --primary-color: #005c97; --secondary-color: #363795; --success-color: #28a745; --error-color: #dc3545; --info-color: #17a2b8; --light-bg: #f8f9fa; --dark-text: #343a40; --light-text: #6c757d; --border-color: #dee2e6; }
+        body { font-family: 'Poppins', sans-serif; background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--dark-text); -webkit-font-smoothing: antialiased; }
+        .container { background-color: #ffffff; border-radius: 20px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08); padding: 40px; width: 100%; max-width: 800px; text-align: center; margin-top: 20px; margin-bottom: 20px; position: relative; border: 1px solid var(--border-color); }
+        .page { display: none; }
+        h1 { color: var(--dark-text); margin-bottom: 8px; font-weight: 700; }
+        #kero-assistance { font-size: 2.5em; }
+        .subtitle { font-size: 1.8em; font-weight: 600; color: var(--primary-color); }
+        .container > p { color: var(--light-text); font-size: 1.1em; margin-bottom: 30px; }
+        .section { margin-bottom: 30px; padding: 25px 0; border: none; border-top: 1px solid var(--border-color); background-color: transparent; }
+        .instructions { font-size: 0.9em; color: #0c5460; background-color: #d1ecf1; padding: 15px; border-radius: 8px; border: 1px solid #bee5eb; margin-bottom: 25px; text-align: left; }
+        .instructions strong { color: #004085; }
+        .location-container { display: flex; gap: 20px; justify-content: space-around; align-items: center; margin-bottom: 15px; }
+        input[type="file"] { display: none; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; margin: 5px; transition: all 0.25s ease-in-out; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 92, 151, 0.2); }
+        button:disabled { background-color: #ced4da; cursor: not-allowed; transform: none; box-shadow: none; }
+        .main-action-button { font-size: 1.1rem; font-weight: 600; padding: 15px 35px; background-color: var(--success-color); }
+        .main-action-button:hover:not(:disabled) { box-shadow: 0 6px 12px rgba(40, 167, 69, 0.25); }
+        .home-button { display: flex; align-items: center; justify-content: center; width: 100%; margin: 15px 0; padding: 20px; font-size: 1.2em; font-weight: 600; background-color: #fff; color: var(--primary-color); border: 2px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.04); }
+        .home-button:hover { border-color: var(--primary-color); background-color: #f8f9fa; color: var(--secondary-color); transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
+        .home-nav-button { background-color: var(--light-text); position: absolute; top: 25px; left: 25px; padding: 8px 16px; }
+        .home-nav-button:hover { background-color: var(--dark-text); }
+        .message-display { margin-top: 20px; font-weight: 500; min-height: 1.2em; padding: 12px 18px; border-radius: 8px; text-align: left; border: 1px solid transparent; word-break: break-word; }
+        .message-display:before { font-weight: 700; margin-right: 10px; }
+        .message-display.success { color: #155724; background-color: #d4edda; border-color: #c3e6cb; }
+        .message-display.success:before { content: "✔"; }
+        .message-display.info { color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; }
+        .message-display.info:before { content: "ℹ"; }
+        .message-display.error { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
+        .message-display.error:before { content: "⚠"; }
+        .select2-container--default .select2-selection--single { border: 1px solid var(--border-color) !important; border-radius: 8px !important; height: 45px !important; padding: 8px 12px !important; }
+        .select2-container--default .select2-selection--single .select2-selection__rendered { color: var(--dark-text) !important; line-height: 28px !important; }
+        .select2-container--default .select2-selection--single .select2-selection__arrow { height: 43px !important; }
+        .select2-dropdown { border: 1px solid var(--border-color) !important; border-radius: 8px !important; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .version { position: fixed; bottom: 10px; right: 10px; font-size: 0.8em; color: #fff; background-color: rgba(0, 0, 0, 0.4); padding: 4px 8px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+    <div class="version">v 7.0 Bound</div>
+
+    <div id="homePage" class="container page">
+        <h1><span id="kero-assistance">Kero Assistance</span></h1>
+<a href="../index.html" style="text-decoration: none; display: block; text-align: center; margin-bottom: 25px; color: #0077cc; font-weight: 500;">← العودة إلى لوحة التحكم</a>
+        <p>Your secure, server-powered assistant. Please select a tool.</p>
+        <div class="section">
+            <button id="goToTransferBtn" class="home-button">Stock Transfer Management</button>
+            <button id="goToValidatorBtn" class="home-button">Barcode Validator & Retriever</button>
+        </div>
+        <div class="message-display info">Ready to go!</div>
+    </div>
+    <div id="stockTransferPage" class="container page">
+        <button class="go-home-btn home-nav-button">Back to Home</button>
+        <h1><span class="subtitle">Stock Transfer Management</span></h1>
+        <div class="section">
+            <div class="instructions"><strong>Instructions:</strong> Upload an Excel file (`.xlsx`). Data **must be on the first sheet** and contain columns with headers: <strong>code</strong>, <strong>quantity</strong>.</div>
+            <div class="location-container">
+                <select id="locationFrom" class="location-select"></select>
+                <select id="locationTo" class="location-select"></select>
+            </div>
+            <input type="file" id="quantityFile" accept=".xlsx">
+            <button id="uploadQuantityButton">Upload Quantity File</button>
+            <button id="clearQuantity">Clear Quantity</button>
+        </div>
+        <button id="processTransferButton" class="main-action-button">Process Transfer and Download</button>
+        <div class="message-display"></div>
+    </div>
+    <div id="barcodeValidatorPage" class="container page">
+        <button class="go-home-btn home-nav-button">Back to Home</button>
+        <h1><span class="subtitle">Barcode Validator & Data Retriever</span></h1>
+        <div class="section">
+            <div class="instructions"><strong>Instructions:</strong> Upload an Excel file (`.xlsx`). Data **must be on the first sheet** and contain a column with the header: <strong>barcode</strong>.</div>
+            <input type="file" id="barcodeFile" accept=".xlsx">
+            <button id="uploadBarcodeButton">Upload Barcode File</button>
+            <button id="clearBarcodes">Clear Barcodes</button>
+        </div>
+        <button id="validateDownloadButton" class="main-action-button">Validate Barcodes and Download</button>
+        <div class="message-display"></div>
+    </div>
+
+    <script>
+        // ########## IMPORTANT: PASTE YOUR NEW WEB APP URL HERE ##########
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1tyUemUsMGlGIEIrOzi-DmfaFhhv-Vb42EmOpv8BFQ9MM8VfO74sWozSeBfBsGxP2-A/exec';
+        
+        // Define the name of the sheet (tab) inside your Google Sheet file that you want to use.
+        const GOOGLE_SHEET_NAME_TO_USE = 'Products';
+
+        let quantityData = null;
+        let barcodeData = null;
+        const locations = [
+            { id: "جاردنز 101", text: "جاردنز 101" }, { id: "تلال السخنة 102", text: "تلال السخنة 102" },
+            { id: "ستيلا 103", text: "ستيلا 103" }, { id: "الدبلو 104", text: "الدبلو 104" },
+            { id: "تلال الساحل 105", text: "تلال الساحل 105" }, { id: "سوان لك 106", text: "سوان لك 106" },
+            { id: "كاسكادا 107", text: "كاسكادا 107" }, { id: "لافيستا باي 108", text: "لافيستا باي 108" },
+            { id: "راس الحكمة 109", text: "راس الحكمة 109" }, { id: "لازوردي 110", text: "لازوردي 110" },
+            { id: "النادي 111", text: "النادي 111" }, { id: "زايد 112", text: "زايد 112" },
+            { id: "القطامية 115", text: "القطامية 115" }, { id: "مخزن بلبيس 201", text: "مخزن بلبيس 201" },
+            { id: "مخزن الساحل 202", text: "مخزن الساحل 202" },{ id: "فوكا باي 117", text: "فوكا باي 117" },
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('homePage');
+            const locationOptions = [{ id: '', text: 'Select Location' }, ...locations];
+            $('#locationFrom, #locationTo').select2({ data: locationOptions });
+            document.getElementById('goToTransferBtn').addEventListener('click', () => showPage('stockTransferPage'));
+            document.getElementById('goToValidatorBtn').addEventListener('click', () => showPage('barcodeValidatorPage'));
+            document.querySelectorAll('.go-home-btn').forEach(button => button.addEventListener('click', () => showPage('homePage')));
+            document.getElementById('uploadQuantityButton').addEventListener('click', () => document.getElementById('quantityFile').click());
+            document.getElementById('quantityFile').addEventListener('change', handleFileUpload);
+            document.getElementById('clearQuantity').addEventListener('click', clearQuantity);
+            document.getElementById('processTransferButton').addEventListener('click', processTransferData);
+            document.getElementById('uploadBarcodeButton').addEventListener('click', () => document.getElementById('barcodeFile').click());
+            document.getElementById('barcodeFile').addEventListener('change', handleFileUpload);
+            document.getElementById('clearBarcodes').addEventListener('click', clearBarcodes);
+            document.getElementById('validateDownloadButton').addEventListener('click', processAndValidateBarcodes);
+        });
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => { page.style.display = 'none'; });
+            const newPage = document.getElementById(pageId);
+            if (newPage) {
+                newPage.style.display = 'block';
+                const msgDiv = newPage.querySelector('.message-display');
+                if (msgDiv) { msgDiv.innerText = ''; msgDiv.className = 'message-display'; }
+            }
+        }
+        
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            const isQuantityFile = event.target.id === 'quantityFile';
+            const requiredHeaders = isQuantityFile ? ['code', 'quantity'] : ['barcode'];
+            const friendlyName = isQuantityFile ? 'Quantity' : 'Barcode';
+            if (!file) { return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    if (!workbook.SheetNames || workbook.SheetNames.length === 0) throw new Error("Excel file contains no sheets.");
+                    
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rowsAsArray = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
+
+                    if (rowsAsArray.length < 2) {
+                        throw new Error(`The first sheet is empty or contains only a header.`);
+                    }
+
+                    const headerRow = rowsAsArray[0].map(h => String(h || '').toLowerCase().trim());
+                    const dataRows = rowsAsArray.slice(1);
+                    const headerMap = {};
+                    headerRow.forEach((h, i) => { headerMap[h] = i; });
+
+                    const missingHeaders = requiredHeaders.filter(h => headerMap[h] === undefined);
+                    if (missingHeaders.length > 0) {
+                        throw new Error(`File is missing required column(s): [${missingHeaders.join(', ')}].`);
+                    }
+
+                    const jsonData = dataRows.map(row => {
+                        const obj = {};
+                        requiredHeaders.forEach(header => {
+                            const cellValue = row[headerMap[header]];
+                            obj[header] = (cellValue === null || cellValue === undefined) ? "" : String(cellValue);
+                        });
+                        return obj;
+                    }).filter(obj => {
+                        return Object.values(obj).some(val => val && String(val).trim() !== "");
+                    });
+                    
+                    if (jsonData.length === 0) throw new Error(`File contains no data rows.`);
+
+                    if (isQuantityFile) { quantityData = jsonData; } else { barcodeData = jsonData; }
+                    showMessage(`${friendlyName} file with ${jsonData.length} rows uploaded successfully! Ready to process.`, 'success');
+
+                } catch (error) {
+                    showMessage(`Upload Error: ${error.message}`, 'error');
+                    if (isQuantityFile) { quantityData = null; } else { barcodeData = null; }
+                } finally { event.target.value = ''; }
+            };
+            reader.onerror = () => showMessage(`Error reading file.`, 'error');
+            reader.readAsArrayBuffer(file);
+        }
+
+        function clearQuantity() { quantityData = null; showMessage('Quantity file has been cleared.', 'info'); }
+        function clearBarcodes() { barcodeData = null; showMessage('Barcode file has been cleared.', 'info'); }
+
+        async function processTransferData() {
+            if (SCRIPT_URL.includes('PASTE_YOUR_NEW_DEPLOYED_WEB_APP_URL_HERE')) return showMessage('Configuration Error: The SCRIPT_URL has not been set in the HTML file.', 'error');
+            if (!quantityData) return showMessage('Error: Please upload a Quantity file.', 'error');
+            const locationFrom = document.getElementById('locationFrom').value;
+            const locationTo = document.getElementById('locationTo').value;
+            if (!locationFrom || !locationTo) return showMessage('Error: Please select both "From" and "To" locations.', 'error');
+            const button = document.getElementById('processTransferButton');
+            button.disabled = true;
+            showMessage(`Processing ${quantityData.length} items on server... Please wait.`, 'info');
+            try {
+                const payloadForServer = {
+                    action: 'processTransfer',
+                    sheetName: GOOGLE_SHEET_NAME_TO_USE,
+                    // FIX: Convert quantity to a number before sending it to the server.
+                    // Use parseInt to ensure it's an integer, and default to 0 if it's not a valid number.
+                    payload: quantityData.map(row => ({ 
+                        code: String(row.code), 
+                        quantity: parseInt(row.quantity, 10) || 0 
+                    }))
+                };
+                const response = await fetch(SCRIPT_URL, { method: 'POST', mode: 'cors', body: JSON.stringify(payloadForServer) });
+                if (!response.ok) throw new Error(`Server returned an error: ${response.statusText}`);
+                const result = await response.json();
+                if (result.status === 'error') throw new Error(result.message);
+                const wb = XLSX.utils.book_new();
+                const wsResults = XLSX.utils.aoa_to_sheet([["Code", "Barcode", "Name", "Quantity"], ...result.results]);
+                wsResults['!cols'] = [{ wch: 15 }, { wch: 20 }, { wch: 50 }, { wch: 10 }];
+                XLSX.utils.book_append_sheet(wb, wsResults, "Results");
+                if (result.unmatched && result.unmatched.length > 0) {
+                    const wsUnmatched = XLSX.utils.aoa_to_sheet([["Code", "Quantity"], ...result.unmatched]);
+                    wsUnmatched['!cols'] = [{ wch: 15 }, { wch: 10 }];
+                    XLSX.utils.book_append_sheet(wb, wsUnmatched, "Unmatched");
+                }
+                const formattedDate = new Date().toISOString().slice(0, 10);
+                XLSX.writeFile(wb, `من ${locationFrom} الى ${locationTo} ${formattedDate}.xlsx`);
+                showMessage('Success! Transfer data processed and results downloaded.', 'success');
+            } catch (error) { showMessage(`Processing Error: ${error.message}`, 'error'); } finally { button.disabled = false; }
+        }
+        
+        async function processAndValidateBarcodes() {
+            if (SCRIPT_URL.includes('PASTE_YOUR_NEW_DEPLOYED_WEB_APP_URL_HERE')) return showMessage('Configuration Error: The SCRIPT_URL has not been set in the HTML file.', 'error');
+            if (!barcodeData) return showMessage('Error: Please upload a Barcode file.', 'error');
+            const button = document.getElementById('validateDownloadButton');
+            button.disabled = true;
+            showMessage(`Validating ${barcodeData.length} barcodes on server... Please wait.`, 'info');
+            try {
+                const payloadForServer = {
+                    action: 'validateBarcodes',
+                    sheetName: GOOGLE_SHEET_NAME_TO_USE,
+                    // This is correct as is, barcodes should be strings.
+                    payload: barcodeData.map(row => String(row.barcode).trim())
+                };
+                const response = await fetch(SCRIPT_URL, { method: 'POST', mode: 'cors', body: JSON.stringify(payloadForServer) });
+                if (!response.ok) throw new Error(`Server returned an error: ${response.statusText}`);
+                const result = await response.json();
+                if (result.status === 'error') throw new Error(result.message);
+                const wb = XLSX.utils.book_new();
+                const header = ["Barcode", "Validation Status", "Code", "Name", "Supplier"];
+                const ws = XLSX.utils.aoa_to_sheet([header, ...result.results]);
+                ws['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 15 }, { wch: 50 }, { wch: 30 }];
+                XLSX.utils.book_append_sheet(wb, ws, "Validation Results");
+                const formattedDate = new Date().toISOString().slice(0, 10);
+                XLSX.writeFile(wb, `Barcode_Validation_Results_${formattedDate}.xlsx`);
+                showMessage('Success! Barcodes validated and results downloaded.', 'success');
+            } catch (error) { showMessage(`Processing Error: ${error.message}`, 'error'); } finally { button.disabled = false; }
+        }
+
+        function showMessage(message, type = 'info') {
+            let messageDiv = document.querySelector('.page[style*="block"] .message-display');
+            if (!messageDiv) { messageDiv = document.querySelector('#homePage .message-display'); }
+            if (!messageDiv) return;
+            messageDiv.innerText = message;
+            messageDiv.className = 'message-display';
+            if (type === 'success') { messageDiv.classList.add('success'); }
+            else if (type === 'error') { messageDiv.classList.add('error'); }
+            else if (type === 'info') { messageDiv.classList.add('info'); }
+        }
+    </script>
+</body>
+</html>
