@@ -23,10 +23,19 @@
             padding: 0;
         }
 
+        :root {
+            --dark-bg: #1a1a1d;
+            --dark-card: #2c2c34;
+            --dark-border: #4a4a52;
+            --text-primary: #f0f0f5;
+            --text-secondary: #a9a9b2;
+            --accent-gradient: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f2f5; /* Light gray background */
-            color: #333;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
             line-height: 1.6;
             display: flex;
             flex-direction: column;
@@ -35,11 +44,11 @@
 
         /* --- Header Styling --- */
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
+            background-color: transparent;
+            color: var(--text-primary);
             padding: 2.5rem 1rem;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--dark-border);
         }
 
         header h1 {
@@ -48,124 +57,89 @@
             margin-bottom: 0.5rem;
             letter-spacing: 1px;
         }
+        
+        header h1 i {
+            color: #89f7fe;
+        }
 
         header p {
             font-size: 1.1rem;
             font-weight: 300;
-            opacity: 0.9;
+            color: var(--text-secondary);
         }
 
         /* --- Main Content Area --- */
         main {
             flex-grow: 1;
-            padding: 2rem 1rem;
+            padding: 3rem 1rem;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        /* --- Link Group Grid --- */
-        .link-groups-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            justify-content: center; /* Center the single card if there's enough space */
-        }
-
-        /* --- Link Group Card Styling --- */
-        .link-group {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            padding: 1.5rem 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            max-width: 500px; /* Max-width for single card view */
-            margin: 0 auto; /* Center the card in the grid column */
-        }
-
-        .link-group:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        .link-group h2 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: #4a4a4a;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #667eea;
-            display: flex;
-            align-items: center;
-        }
-
-        .link-group h2 i {
-            margin-right: 0.75em;
-            color: #667eea;
-            font-size: 1.3em;
-        }
-
-        .link-group ul {
+        /* --- App Button Grid Container --- */
+        .app-grid {
             list-style-type: none;
             padding: 0;
-            flex-grow: 1;
-        }
-
-        .link-group li {
-            margin-bottom: 0.75rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
         }
         
-        .link-group li:last-child {
-            margin-bottom: 0;
-        }
-
-        /* --- Link Item Styling --- */
-        .link-item a {
+        /* --- Sleek Dark Button Styling --- */
+        .app-button {
             display: flex;
             align-items: center;
-            padding: 0.9rem 1.2rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
+            
+            background-color: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            
             text-decoration: none;
-            color: #555;
+            color: var(--text-primary);
             font-weight: 500;
-            transition: all 0.3s ease;
-            background-color: #f9f9f9;
+            font-size: 1.1rem;
+
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .link-item a:hover {
-            background-color: #e9f2ff;
-            border-color: #667eea;
-            color: #667eea;
-            transform: translateX(5px);
+        .app-button:hover {
+            transform: translateY(-5px);
+            border-color: #66a6ff;
+            box-shadow: 0 0 20px rgba(102, 166, 255, 0.2);
+        }
+        
+        /* --- Button Icon Styling --- */
+        .app-button .icon {
+            font-size: 1.8rem;
+            margin-right: 1.25rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: var(--dark-bg);
+            color: var(--text-secondary);
+            transition: color 0.3s ease, background 0.3s ease;
         }
 
-        .link-item a i {
-            margin-right: 0.75em;
-            color: #888;
-            font-size: 1.1em;
-            transition: color 0.3s ease;
-        }
-
-        .link-item a:hover i {
-            color: #667eea;
+        .app-button:hover .icon {
+            color: var(--text-primary);
+            background: var(--accent-gradient);
         }
 
         /* --- Footer Styling --- */
         footer {
             text-align: center;
             padding: 1.5rem 1rem;
-            background-color: #343a40;
-            color: #f8f9fa;
+            background-color: transparent;
+            border-top: 1px solid var(--dark-border);
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-top: auto;
+            margin-top: 2rem;
         }
         footer a {
-            color: #667eea;
+            color: #89f7fe;
             text-decoration: none;
         }
         footer a:hover {
@@ -177,17 +151,21 @@
             header h1 {
                 font-size: 2.2rem;
             }
-            .link-group {
-                padding: 1.2rem 1.5rem;
-            }
         }
 
         @media (max-width: 480px) {
             header h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
-            .link-groups-grid {
-                grid-template-columns: 1fr;
+            .app-grid {
+                grid-template-columns: 1fr; /* Single column on small screens */
+            }
+            .app-button {
+                font-size: 1rem;
+            }
+            .app-button .icon {
+                font-size: 1.5rem;
+                padding: 0.8rem;
             }
         }
     </style>
@@ -195,53 +173,51 @@
 <body>
 
     <header>
-        <h1><i class="fas fa-cogs"></i> KERO Hub</h1>
-        <p>KERO Assistance: Your personal dashboard for quick access to important pages and resources.</p>
+        <h1><i class="fas fa-layer-group"></i> KERO Hub</h1>
+        <p>A centralized dashboard for your applications.</p>
     </header>
 
     <main>
         <div class="container">
-            <div class="link-groups-grid">
+            
+            <ul class="app-grid">
+                <li>
+                    <a href="https://kero-784.github.io/Stock-Transfere/" class="app-button">
+                        <i class="fas fa-exchange-alt icon"></i>
+                        <span>Stock Transfer</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://kero-784.github.io/exceptions-management/" class="app-button">
+                        <i class="fas fa-exclamation-triangle icon"></i>
+                        <span>Exceptions Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://kero-784.github.io/promotion-a4-generator/" class="app-button">
+                        <i class="fas fa-file-invoice icon"></i>
+                        <span>Promo A4 Generator</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://kero-784.github.io/suppliers/" class="app-button">
+                        <i class="fas fa-truck-loading icon"></i>
+                        <span>Suppliers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://kero-784.github.io/tracking-system/" class="app-button">
+                        <i class="fas fa-route icon"></i>
+                        <span>Tracking System</span>
+                    </a>
+                </li>
+            </ul>
 
-                <!-- === KERO APPLICATIONS === -->
-                <section class="link-group">
-                    <h2><i class="fas fa-folder-open"></i> Applications</h2>
-                    <ul>
-                        <li class="link-item">
-                            <a href="https://kero-784.github.io/Stock-Transfere/">
-                                <i class="fas fa-exchange-alt"></i> Stock-Transfere
-                            </a>
-                        </li>
-                        <li class="link-item">
-                            <a href="https://kero-784.github.io/exceptions-management/">
-                                <i class="fas fa-exclamation-triangle"></i> exceptions-management
-                            </a>
-                        </li>
-                        <li class="link-item">
-                            <a href="https://kero-784.github.io/promotion-a4-generator/">
-                                <i class="fas fa-file-invoice"></i> promotion-a4-generator
-                            </a>
-                        </li>
-                        <li class="link-item">
-                            <a href="https://kero-784.github.io/suppliers/">
-                                <i class="fas fa-truck-loading"></i> suppliers
-                            </a>
-                        </li>
-                        <li class="link-item">
-                            <a href="https://kero-784.github.io/tracking-system/">
-                                <i class="fas fa-route"></i> tracking-system
-                            </a>
-                        </li>
-                    </ul>
-                </section>
-
-            </div> <!-- /.link-groups-grid -->
         </div> <!-- /.container -->
     </main>
 
     <footer>
-        <p>© 2024 KERO Hub. Built with <i class="fas fa-heart" style="color: #e25555;"></i> & <a href="https://fontawesome.com/">Font Awesome</a>.
-        <br>Tip: Bookmark this page for quick access!
+        <p>© 2024 KERO Hub. Built with <i class="fas fa-bolt" style="color: #89f7fe;"></i> & <a href="https://fontawesome.com/">Font Awesome</a>.
         </p>
     </footer>
 
