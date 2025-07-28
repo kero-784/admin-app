@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Tracker</title>
+    <title>Kero Tracker</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Flatpickr (Date Picker) - Dark theme link is now REMOVED -->
+    <!-- Flatpickr (Date Picker) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <style>
@@ -115,6 +115,15 @@
         #recordTable tbody tr:hover { background-color: #e9ecef; }
         .status-select { font-size: 0.9rem; padding: 5px 10px; border-radius: 6px; }
         .checkbox-col input { height: 1.2em; width: 1.2em; accent-color: var(--accent-primary); }
+        
+        /* Action buttons in table */
+        .action-buttons button { background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 1rem; padding: 0.5rem; border-radius: 50%; width: 36px; height: 36px; line-height: 1; transition: all 0.2s ease; }
+        .action-buttons button:hover { background-color: #e9ecef; color: var(--accent-primary); }
+
+        /* Close button for modals */
+        .modal-close-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.7); border: 1px solid var(--glass-border); color: var(--text-secondary); border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s ease; }
+        .modal-close-btn:hover { transform: rotate(90deg); color: var(--danger-color); background: #fff; }
+
 
         /* --- LOADER, POPUP, SCROLLBARS --- */
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(248, 249, 250, 0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 1rem; color: var(--text-primary); font-size: 1.2rem; }
@@ -218,11 +227,12 @@
 </div>
 
 <div class="modal-overlay" id="editModal">
-    <div class="modal-content" style="max-width: 800px;">
+    <div class="modal-content" style="max-width: 600px;">
         <div class="glass-card">
             <div class="card-header"><h2><i class="fa-solid fa-pencil-alt"></i>Edit Record</h2></div>
             <input type="hidden" id="editRecordId">
-            <div class="form-grid"><div class="form-group"><label for="editDriverName">Driver Name</label><input type="text" id="editDriverName" required></div><div class="form-group"><label for="editDate">Document Date</label><input type="text" id="editDate" required></div></div>
+            <div class="form-group" style="margin-bottom: 1.75rem;"><label for="editDriverName">Driver Name</label><input type="text" id="editDriverName" required></div>
+            <div class="form-group" style="margin-bottom: 1.75rem;"><label for="editDate">Document Date</label><input type="text" id="editDate" required></div>
             <div class="form-group" style="margin-bottom: 1.75rem;"><label for="editDescription">Document Description</label><textarea id="editDescription" rows="3" required></textarea></div>
             <div class="button-group"><button class="btn btn-secondary" id="closeEditModalBtn"><i class="fa-solid fa-times"></i> Cancel</button><button class="btn btn-primary" onclick="saveRecordChanges()"><i class="fa-solid fa-save"></i> Save Changes</button></div>
         </div>
@@ -232,10 +242,9 @@
 <div class="print-section" id="printSection"></div>
 <div id="popupMessage"></div>
 
-<!-- CORRECTED SCRIPT SECTION - ONLY ONE SCRIPT TAG -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyijzxKH2xiDCaOBXTd6wrImfK45CA2ICZwc3rNmGIXkgqcVXrSyVQ3R1QULtvDvfm/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyijzxKH2xiDCaOBXTd6wrImfK45CA2ICZwc3rNmGIXkgqcVXrSyVQ3R1QULtvDvfm/exec"; // IMPORTANT: Replace with your Google Script URL
     const branchOptions = [ "نادى هليوبوليس", "تلال السخنه", "جاردنز السخنه", "لازوردی بای", "الدبلوماسيين", "ستيلا", "كاسكادا", "تلال الساحل", "لافيستا بای", "سوان ليك", "لافيستا رأس الحكمة", "دبلوماسيين - خضار", "هاسيندا ريد - خضار", "فوكا باي", "القطامية", "بالم هيلز رايد" ];
     const statusOptions = ["Pending", "In Transit", "Delivered", "Problem"];
     let allRecords = [];
@@ -246,14 +255,21 @@
 
     function showLoader(text = "Loading...") { loader.textContent = text; loader.style.display = 'flex'; }
     function hideLoader() { loader.style.display = 'none'; }
-    function showPopupMessage(message, isError = false) { const popup = document.getElementById("popupMessage"); popup.textContent = message; popup.className = `popup-message ${isError ? "error" : "success"}`; popup.classList.add("show"); setTimeout(() => popup.classList.remove("show"), 4000); }
+    function showPopupMessage(message, isError = false) { 
+        const popup = document.getElementById("popupMessage"); 
+        popup.textContent = message; 
+        popup.className = `popup-message ${isError ? "error" : "success"}`; 
+        popup.classList.add("show"); 
+        setTimeout(() => popup.classList.remove("show"), isError ? 8000 : 4000); 
+    }
     function populateBranchCheckboxes(){document.getElementById("branch-checkboxes").innerHTML=branchOptions.map(t=>`<label class="checkbox-label"><input type="checkbox" value="${t}" name="branch"> ${t}</label>`).join("")}
     function generateTrackingNumber(){return`TRACK-${Date.now().toString(36)}-${Math.random().toString(36).substring(2,7)}`.toUpperCase()}
     function resetFiltersAndRender() { document.getElementById('searchTerms').value = ''; document.getElementById('categoryFilter').value = ''; document.querySelector("#dateFilter")._flatpickr.clear(); renderTable(); }
     
     async function apiRequest(action, data = {}) {
+        console.log(`%c[API Request] -> Action: ${action}`, 'color: #4a90e2; font-weight: bold;', data);
         if (SCRIPT_URL === "PASTE_YOUR_DEPLOYED_URL_HERE" || !SCRIPT_URL.startsWith("https://script.google.com/")) {
-            showPopupMessage("ERROR: Please update the SCRIPT_URL constant in the HTML code.", true);
+            showPopupMessage("FATAL ERROR: SCRIPT_URL is not set in the HTML. Please update it.", true);
             return null;
         }
         showLoader(`Processing ${action}...`);
@@ -263,15 +279,78 @@
                 body: JSON.stringify({ action, ...data }),
                 headers: { "Content-Type": "text/plain;charset=utf-8" }
             });
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-            return await res.json();
+            if (!res.ok) {
+                console.error(`[API Error] HTTP error! Status: ${res.status} ${res.statusText}`);
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            const jsonResponse = await res.json();
+            console.log(`%c[API Response] <- Action: ${action}`, 'color: #198754; font-weight: bold;', jsonResponse);
+            return jsonResponse;
         } catch (error) {
-            console.error('API Request Failed:', error);
-            showPopupMessage('An error occurred. Check the console.', true);
+            console.error('[API Request Failed]', error);
+            showPopupMessage('An error occurred. Please check the browser console (F12) for details.', true);
             return null;
         } finally {
             hideLoader();
         }
+    }
+
+    async function fetchAndRenderRecords() {
+        const result = await apiRequest('fetchAll');
+        console.log("Response from 'fetchAll' API call:", result);
+
+        if (result && result.success === false) {
+             console.error("Data loading failed. Server returned an error:", result.message);
+             showPopupMessage(`Error from server: ${result.message}`, true);
+             allRecords = [];
+        } else if (!result || !Array.isArray(result)) {
+            console.error("Data loading failed. The response from the server was not a valid array.", "Received:", result);
+            showPopupMessage('Could not load data. Check browser console (F12) for details.', true);
+            allRecords = [];
+        } else {
+            console.log(`Successfully fetched ${result.length} records. Populating table.`);
+            allRecords = result;
+        }
+        allRecords.sort((a, b) => (new Date(b.creationTimestamp) - new Date(a.creationTimestamp)));
+        renderTable();
+    }
+
+    function renderTable() {
+        const recordTableBody = document.getElementById('recordTableBody');
+        const searchTerm = document.getElementById('searchTerms').value.toUpperCase();
+        const category = document.getElementById('categoryFilter').value;
+        const selectedDates = document.querySelector("#dateFilter")._flatpickr.selectedDates;
+
+        const filteredRecords = allRecords.filter(record => {
+            if (typeof record !== 'object' || record === null) return false;
+            const textMatch = !searchTerm || !category || String(record[category] || '').toUpperCase().includes(searchTerm);
+            let dateMatch = true;
+            if (selectedDates.length > 0 && record.creationTimestamp) {
+                const recordDate = new Date(new Date(record.creationTimestamp).toDateString());
+                const startDate = new Date(selectedDates[0].toDateString());
+                const endDate = selectedDates.length > 1 ? new Date(selectedDates[1].toDateString()) : startDate;
+                dateMatch = recordDate >= startDate && recordDate <= endDate;
+            }
+            return textMatch && dateMatch;
+        });
+
+        if (filteredRecords.length === 0) {
+            recordTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 3rem; color: var(--text-secondary);">No records found. Try resetting filters.</td></tr>`;
+            return;
+        }
+
+        recordTableBody.innerHTML = filteredRecords.map((t, index) => {
+            const statusDropdown = `<select class="status-select" onchange="updateStatus('${t.id}', this.value)">${statusOptions.map(e => `<option value="${e}" ${t.status === e ? 'selected' : ''}>${e}</option>`).join('')}</select>`;
+            const recordDataString = JSON.stringify(t).replace(/'/g, "'");
+            return `<tr style="animation: fadeInUp 0.5s ease-out ${index * 0.05}s backwards;">
+                <td class="checkbox-col"><input type="checkbox" class="record-checkbox" data-record='${recordDataString}'></td>
+                <td>${t.trackingNumber || ''}</td><td>${t.driverName || ''}</td><td>${t.branch || ''}</td>
+                <td>${t.date || ''}</td><td>${statusDropdown}</td>
+                <td style="text-align:center;"><div class="action-buttons">
+                    <button title="Edit" onclick='openEditModal(${recordDataString})'><i class="fa-solid fa-pencil-alt"></i></button>
+                    <button title="Delete" onclick="deleteRecord('${t.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                </div></td></tr>`;
+        }).join('');
     }
 
     async function processBatch(shouldPrint = false) {
@@ -305,56 +384,6 @@
         } else {
             showPopupMessage('Failed to save batch. Please check console.', true);
         }
-    }
-
-    async function fetchAndRenderRecords() {
-        const result = await apiRequest('fetchAll');
-        if (!result || !Array.isArray(result)) {
-            showPopupMessage('Could not load data. The response was invalid.', true);
-            allRecords = [];
-        } else {
-            allRecords = result;
-        }
-        allRecords.sort((a, b) => (new Date(b.creationTimestamp) - new Date(a.creationTimestamp)));
-        renderTable();
-    }
-
-    function renderTable() {
-        const recordTableBody = document.getElementById('recordTableBody');
-        const searchTerm = document.getElementById('searchTerms').value.toUpperCase();
-        const category = document.getElementById('categoryFilter').value;
-        const selectedDates = document.querySelector("#dateFilter")._flatpickr.selectedDates;
-
-        const filteredRecords = allRecords.filter(record => {
-            if (typeof record !== 'object' || record === null) return false;
-            const textMatch = !searchTerm || !category || String(record[category] || '').toUpperCase().includes(searchTerm);
-            let dateMatch = true;
-            if (selectedDates.length > 0 && record.creationTimestamp) {
-                const recordDate = new Date(new Date(record.creationTimestamp).toDateString());
-                const startDate = new Date(selectedDates[0].toDateString());
-                const endDate = selectedDates.length > 1 ? new Date(selectedDates[1].toDateString()) : startDate;
-                dateMatch = recordDate >= startDate && recordDate <= endDate;
-            }
-            return textMatch && dateMatch;
-        });
-
-        if (filteredRecords.length === 0) {
-            recordTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 3rem; color: var(--text-secondary);">No records found.</td></tr>`;
-            return;
-        }
-
-        recordTableBody.innerHTML = filteredRecords.map((t, index) => {
-            const statusDropdown = `<select class="status-select" onchange="updateStatus('${t.id}', this.value)">${statusOptions.map(e => `<option value="${e}" ${t.status === e ? 'selected' : ''}>${e}</option>`).join('')}</select>`;
-            const recordDataString = JSON.stringify(t);
-            return `<tr style="animation: fadeInUp 0.5s ease-out ${index * 0.05}s backwards;">
-                <td class="checkbox-col"><input type="checkbox" class="record-checkbox" data-record='${recordDataString}'></td>
-                <td>${t.trackingNumber || ''}</td><td>${t.driverName || ''}</td><td>${t.branch || ''}</td>
-                <td>${t.date || ''}</td><td>${statusDropdown}</td>
-                <td style="text-align:center;"><div class="action-buttons">
-                    <button title="Edit" onclick='openEditModal(${recordDataString})'><i class="fa-solid fa-pencil-alt"></i></button>
-                    <button title="Delete" onclick="deleteRecord('${t.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                </div></td></tr>`;
-        }).join('');
     }
 
     async function updateStatus(recordId, newStatus) {
